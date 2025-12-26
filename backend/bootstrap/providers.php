@@ -1,5 +1,6 @@
 <?php
 
 return [
-    App\Providers\AppServiceProvider::class,
+    App\Ship\Providers\ShipServiceProvider::class,
+    (new \App\Ship\Core\Loaders\ProvidersLoader()->loadProviders())
 ];

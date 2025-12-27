@@ -4,9 +4,12 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vue-tsc -b && vite build",
-    "preview": "vite preview"
+    "dev": "concurrently \"vite\" \"tsx server/index.ts\"",
+    "build:client": "vite build --config vite.config.client.ts",
+    "build:server": "vite build --config vite.config.server.ts",
+    "build": "npm run build:client && npm run build:server",
+    "serve": "tsx server/index.ts",
+    "serve:production": "cross-env NODE_ENV=production tsx server/index.ts"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.1.18",
@@ -15,6 +18,7 @@
     "@vuelidate/validators": "^2.0.4",
     "@vueuse/head": "^2.0.0",
     "axios": "^1.13.2",
+    "dotenv": "^17.2.3",
     "express": "^5.2.1",
     "pinia": "^3.0.4",
     "primevue": "^4.5.4",
@@ -25,10 +29,14 @@
     "vue-router": "^4.6.4"
   },
   "devDependencies": {
+    "@types/express": "^5.0.6",
     "@types/node": "^24.10.1",
     "@vitejs/plugin-vue": "^6.0.1",
     "@vue/tsconfig": "^0.8.1",
+    "concurrently": "^9.2.1",
+    "cross-env": "^10.1.0",
     "sass": "^1.97.1",
+    "tsx": "^4.21.0",
     "typescript": "~5.9.3",
     "vite": "^7.2.4",
     "vue-tsc": "^3.1.4"

@@ -9,7 +9,7 @@ const router = useRouter();
 
 // define props
 const props = withDefaults(defineProps<IProps>(), {
-  to: 'home'
+  to: { name: 'home' }
 });
 
 // define component

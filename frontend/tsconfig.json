@@ -1,7 +1,67 @@
 {
-  "files": [],
+  "files": [
+    "node_modules/@types/node/globals.d.ts",
+    "node_modules/vitest/globals.d.ts"
+  ],
   "references": [
-    { "path": "./tsconfig.app.json" },
-    { "path": "./tsconfig.node.json" }
+    {
+      "path": "./tsconfig.app.json"
+    },
+    {
+      "path": "./tsconfig.node.json"
+    }
+  ],
+  "compilerOptions": {
+    "lib": ["DOM", "esnext"],
+    "target": "esnext",
+    "module": "esnext",
+    "strict": true,
+    "jsx": "preserve",
+    "moduleResolution": "node",
+    "allowJs": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "forceConsistentCasingInFileNames": true,
+    "useDefineForClassFields": true,
+    "noUncheckedIndexedAccess": true,
+    "strictFunctionTypes": true,
+    "outDir": "./dist",
+    "resolveJsonModule": true,
+    "sourceMap": true,
+    "baseUrl": ".",
+    "types": [
+      "webpack-env",
+      "vitest/importMeta"
+    ],
+    "paths": {
+      "@/*": [
+        "src/*"
+      ],
+      "#server/*": [
+        "server/*"
+      ],
+      "#dist-server": [
+        "dist-server/*"
+      ],
+      "#dist-client": [
+        "dist-client/*"
+      ],
+    }
+  },
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "src/**/*.vue",
+    "tests/**/*.ts",
+    "tests/**/*.tsx",
+    "server/**/*.ts",
+    "server/**/*.tsx",
+    "tests/**/*.ts",
+    "tests/**/*.tsx",
+    "**/*.ts"
+  ],
+  "exclude": [
+    "node_modules"
   ]
 }

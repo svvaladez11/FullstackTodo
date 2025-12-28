@@ -9,10 +9,9 @@ abstract class ModelCore extends Model
 {
     protected(set) string $resourceKey;
 
-    public function __construct()
+    public function __construct(array $attributes = [])
     {
-        parent::__construct(func_get_args());
-
+        parent::__construct($attributes);
         $this->resourceKey = class_basename(static::class);
     }
 

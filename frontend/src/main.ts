@@ -5,6 +5,8 @@ import createRouter from "@/app/providers/router";
 import createApi from "@/app/providers/api";
 import createHead from "@/app/providers/head";
 import createPinia from '@/app/providers/pinia';
+import {PrimeVue} from "@primevue/core";
+import setupVolt from "@/app/plugins/volt";
 
 export type Context = {
     ssr: boolean,
@@ -18,8 +20,8 @@ export async function makeApp(context: Context) {
 
     const http = createHttpPlugin(
         context.ssr
-            ? process.env.API_BASE_URL
-            : import.meta.env.VITE_API_BASE_URL
+        ? import.meta.env.VITE_SERVER_API_BASE_URL
+        : import.meta.env.VITE_API_BASE_URL
     );
     const api = createApi(http);
     const router = createRouter();
@@ -30,6 +32,8 @@ export async function makeApp(context: Context) {
     app.use(router);
     app.use(pinia);
     app.use(head);
+
+    setupVolt(app);
 
     app.provide('api', api);
     app.provide('router', router);

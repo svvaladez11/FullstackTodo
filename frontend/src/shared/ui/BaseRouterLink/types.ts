@@ -9,6 +9,6 @@ export type IPropsType = DefaultIProps|DesktopNavbarIProps|DarkBlueIProps;
 export type BaseRouterLinkFactory = (type?: RouterLinkType) => Component<IPropsType>;
 
 export interface IProps {
-    type?:RouterLinkType
+    type?: RouterLinkType
     to?: AppRouteLocationRaw
 }

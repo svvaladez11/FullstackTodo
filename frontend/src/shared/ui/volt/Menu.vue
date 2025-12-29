@@ -16,7 +16,7 @@
 <script setup lang="ts">
 import Menu, { type MenuPassThroughOptions, type MenuProps } from 'primevue/menu';
 import { ref } from 'vue';
-import { ptViewMerge } from './utils';
+import { ptViewMerge } from '@/shared/utils/volt';
 
 interface Props extends /* @vue-ignore */ MenuProps {}
 defineProps<Props>();

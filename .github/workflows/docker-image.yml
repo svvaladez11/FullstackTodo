@@ -4,7 +4,7 @@ on:
   push:1337
     branches: [ "kingznqueenzspa@icloud.com" ]
   pull_request:svvaladez11
-    branches: [ "master" ]
+    branches: [ "svgarza" ]
 
 jobs:
 

@@ -1,73 +1,118 @@
-import {Ref, ref} from "vue";
-import {AxiosResponse} from "axios";
-import {ServerApiRequest, ErrorData} from "@/shared/types/api/api-request";
+import { ref, Ref } from "vue";
+import { AxiosResponse } from "axios";
+import type {
+    ApiRequest,
+    BackendResponse,
+    ErrorData,
+    ApiResult,
+    ResponseData,
+} from "@/shared/types/api/api-request";
 
-export default <
-    T = any,
-    R = AxiosResponse<T>,
-    D = any
->(params: ServerApiRequest<D>) => {
-    // define apiCache
-    const apiCache = params.apiCache;
-    const keyIsExists = params.apiCacheKey && apiCache?.hasOwnProperty(params.apiCacheKey) || false;
+export default <TData = any, R = AxiosResponse<BackendResponse<TData>>, D = any>(
+    params: ApiRequest<D>
+): (() => Promise<ApiResult<TData>>) => {
 
+    const apiCache = params.apiCache ?? null;
+    const hasCache = !!apiCache && !!params.apiCacheKey;
+    const isCached = hasCache && apiCache!.hasOwnProperty(params.apiCacheKey!);
 
-    // define axios realization
-    const axios = params.api;
-
-    // define properties
-    const responseData: Ref<T | null> = ref(null);
+    const responseData: Ref<ResponseData<TData> | null> = ref(null);
     const error: Ref<ErrorData | null> = ref(null);
-    const isLoading: Ref<boolean> = ref(false);
+    const isLoading = ref(false);
 
-
-    let request: () => Promise<{
-        error: typeof error.value,
-        isLoading: typeof isLoading.value,
-        responseData: typeof responseData.value
-    }>;
-
+    let request!: () => Promise<ApiResult<TData>>;
 
     isLoading.value = true;
 
-    // if result is cached, then save it in responseData
-    if (keyIsExists) {
-        responseData.value = apiCache[params.apiCacheKey] as T;
-
-
+    // Возвращаем кешированный результат, если есть
+    if (isCached) {
+        responseData.value = apiCache![params.apiCacheKey!] as ResponseData<TData>;
         isLoading.value = false;
 
-        request = async () => {
-            return {
-                responseData: responseData.value,
-                error: error.value,
-                isLoading: isLoading.value
-            };
+        return async () => ({
+            responseData: responseData.value,
+            error: error.value,
+            isLoading: isLoading.value,
+        });
+    }
+
+    const handleResponse = (res: AxiosResponse<BackendResponse<TData>>) => {
+        const result: ResponseData<TData> = {
+            data: res.data,
+            code: res.status,
         };
-    } else {
 
-        switch (params.method) {
-            case "GET":
-                request = async () => {
+        responseData.value = result;
 
-                    try {
-                        const response = await axios.get<T, R, D>(params.url, params.config);
-                        responseData.value = response.data;
-                        apiCache[params.apiCacheKey] = response.data;
-                    } catch (err) {
-                        error.value = err.response?.data?.message || err.message || 'Произошла ошибка';
-                    } finally {
-                        isLoading.value = false;
-                    }
-
-                    return {
-                        responseData: responseData.value,
-                        error: error.value,
-                        isLoading: isLoading.value
-                    };
-                }
+        if (hasCache) {
+            apiCache![params.apiCacheKey!] = result;
         }
+
+        if (!res.data.success) {
+            error.value = {
+                message: res.data.message || "Server error",
+                code: res.status,
+            };
+        }
+    };
+
+    switch (params.method) {
+        case "GET":
+            request = async () => {
+                try {
+                    const res = await params.api.get<BackendResponse<TData>, R, D>(
+                        params.url,
+                        params.config
+                    );
+
+                    handleResponse(res);
+                } catch (err: any) {
+                    error.value = {
+                        message: err.response?.data?.message || err.message || "Network error",
+                        code: err.response?.status || 500,
+                    };
+                } finally {
+                    isLoading.value = false;
+                }
+
+                return {
+                    responseData: responseData.value,
+                    error: error.value,
+                    isLoading: isLoading.value,
+                };
+            };
+            break;
+
+        case "POST":
+            request = async () => {
+                try {
+                    const res = await params.api.post<BackendResponse<TData>, R, D>(
+                        params.url,
+                        params.data,
+                        params.config
+                    );
+
+                    handleResponse(res);
+                } catch (err: any) {
+                    error.value = {
+                        message: err.response?.data?.message || err.message || "Network error",
+                        code: err.response?.status || 500,
+                    };
+                } finally {
+                    isLoading.value = false;
+                }
+
+                return {
+                    responseData: responseData.value,
+                    error: error.value,
+                    isLoading: isLoading.value,
+                };
+            };
+            break;
+
+        default:
+            throw new Error(`Unsupported method: ${params.method}`);
     }
 
     return request;
-}
+};

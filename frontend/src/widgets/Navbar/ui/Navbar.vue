@@ -1,15 +1,18 @@
 <script setup lang="ts">
-import Avatar from '@/shared/ui/volt/Avatar.vue';
-import SecondaryButton from '@/shared/ui/volt/SecondaryButton.vue';
-import Toolbar from '@/shared/ui/volt/Toolbar.vue';
+import {Avatar, Button, SecondaryButton, Toolbar} from '@/shared/ui/volt';
 import {BaseRouterLink} from "@/shared/ui/BaseRouterLink";
+import {useLogout, User, useUserStore} from "@/entities/user";
+
+const store = useUserStore();
+
+const {submit} = useLogout();
 </script>
 
 <template>
-  <Toolbar pt:root="rounded-full p-4">
+  <Toolbar pt:root="rounded-full bg-white/30 p-4">
     <template #start>
       <div class="flex items-center gap-2">
-        <BaseRouterLink :to="{ name: 'home' }" class="">
+        <BaseRouterLink :to="{ name: 'home' }">
           <img src="@/widgets/Navbar/assets/img/Logo.svg"
                alt="Логотип"
                class="hover:scale-125 transition-transform delay-10"
@@ -19,20 +22,33 @@ import {BaseRouterLink} from "@/shared/ui/BaseRouterLink";
         <BaseRouterLink>
           <SecondaryButton label="Задачи"
                            text
-                           class="hover:scale-110 transition-transform delay-10"
           />
         </BaseRouterLink>
       </div>
     </template>
 
     <template #end>
-      <div class="flex items-center gap-2">
-        <SecondaryButton label="Вход"
-                         class="hover:scale-105 transition-transform delay-10"
+      <div v-if="store.state.user"
+           class="flex items-center gap-2"
+      >
+        <div class="flex items-center gap-1 hover:scale-105 transition-transform duration-150 cursor-pointer">
+          <Avatar size="large"
+                  shape="circle"
+                  image="https://primefaces.org/cdn/primevue/images/organization/walter.jpg"
+          />
+          <span class="text-lg font-bold">{{ (store.state.user as User).login}}</span>
+        </div>
+        <Button label="Выход"
+                @click.prevent="submit"
         />
-        <SecondaryButton label="Регистрация"
-                         class="hover:scale-105 transition-transform delay-10"
-        />
+      </div>
+      <div v-else class="flex items-center gap-2">
+        <BaseRouterLink :to="{name: 'users.login'}">
+          <Button label="Вход"/>
+        </BaseRouterLink>
+        <BaseRouterLink :to="{name: 'users.registration'}">
+          <Button label="Регистрация"/>
+        </BaseRouterLink>
       </div>
     </template>
   </Toolbar>

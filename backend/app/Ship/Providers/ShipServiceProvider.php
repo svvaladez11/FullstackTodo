@@ -10,7 +10,7 @@ use Illuminate\Pagination\Paginator;
 final class ShipServiceProvider extends ServiceProviderParent
 {
     /**
-     * Register any application services.
+     * RegisterForm any application services.
      */
     public function register(): void
     {

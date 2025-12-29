@@ -1,22 +1,46 @@
-import {AxiosInstance, AxiosRequestConfig} from "axios";
+import type { AxiosInstance, AxiosRequestConfig } from "axios";
 
+// define error types
 export type ErrorData = {
-    message: string
+    message: string;
+    code: number;
 };
-type RequestMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
-interface ApiRequest<D = any> {
-    url: string
-    method: RequestMethod
-    apiCacheKey?: string
-    data?: any
-    config?: AxiosRequestConfig<D>
-    api?: AxiosInstance
+
+
+// define request types
+export type RequestMethod =
+    | "GET"
+    | "POST"
+    | "PUT"
+    | "PATCH"
+    | "DELETE";
+
+export interface ApiRequest<D = any> {
+    url: string;
+    method: RequestMethod;
+    api: AxiosInstance;
+    apiCacheKey?: string;
+    apiCache?: Record<string, any> | null;
+    data?: D;
+    config?: AxiosRequestConfig<D>;
 }
-export interface ServerApiRequest<D = any> extends ApiRequest<D> {
-    apiCache?: { [p: string]: any }
-}
-export type ServerApiResponse<T = any> = Promise<{
-    responseData: T | null
-    error: ErrorData | null
-    isLoading: boolean
-}>
+
+// define response types
+export type BackendResponse<T> = {
+    success: boolean;
+    data: T;
+    message: string;
+    errors: Record<string, string[]>;
+};
+
+// define api types
+type ResponseData<T> = {
+    data: BackendResponse<T>
+    code: number
+};
+
+export type ApiResult<T> = {
+    responseData: ResponseData<T> | null;
+    error: ErrorData | null;
+    isLoading: boolean;
+};

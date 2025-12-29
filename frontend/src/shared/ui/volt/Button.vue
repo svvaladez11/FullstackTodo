@@ -15,7 +15,7 @@
 <script setup lang="ts">
 import Button, { type ButtonPassThroughOptions, type ButtonProps } from 'primevue/button';
 import { ref } from 'vue';
-import { ptViewMerge } from './utils';
+import { ptViewMerge } from '@/shared/utils/volt';
 
 interface Props extends /* @vue-ignore */ ButtonProps {}
 defineProps<Props>();

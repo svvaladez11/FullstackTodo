@@ -19,7 +19,7 @@ class GetTheAuthenticatedUserAction extends ActionParent implements GetTheAuthen
             $user = $this->getTheAuthenticatedUserTask->run();
             return $this->respondSuccess(
                 data: [
-                    'user' => $user,
+                    'user' => $user->toArray(),
                 ],
                 message: 'User found.',
             );

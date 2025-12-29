@@ -1,6 +1,6 @@
 <?php
 
-use App\Containers\AppSection\User\UI\API\Controllers\LogoutUserController;
+use App\Containers\AppSection\User\UI\API\Controllers\RefreshAccessTokenController;
 use Illuminate\Support\Facades\Route;
 
-Route::post('v1/users/logout', LogoutUserController::class);
+Route::post('v1/users/refresh', RefreshAccessTokenController::class);

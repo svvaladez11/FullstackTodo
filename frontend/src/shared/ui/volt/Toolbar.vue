@@ -15,7 +15,7 @@
 <script setup lang="ts">
 import Toolbar, { type ToolbarPassThroughOptions, type ToolbarProps } from 'primevue/toolbar';
 import { ref } from 'vue';
-import { ptViewMerge } from './utils';
+import { ptViewMerge } from '@/shared/utils/volt';
 
 interface Props extends /* @vue-ignore */ ToolbarProps {}
 defineProps<Props>();
